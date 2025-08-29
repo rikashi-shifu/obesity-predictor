@@ -32,7 +32,7 @@
 
 2. **Run the Streamlit application**
    ```bash
-   streamlit run obesity_app.py
+   streamlit run app.py
    ```
 
 The application will open in your default web browser at `http://localhost:8501`.
