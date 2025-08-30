@@ -15,10 +15,37 @@ def render_prediction_page(artifacts):
 
         # Demographic information section
         st.markdown("**Demographic Information (Fields 1-4)**")
-        gender = st.selectbox("1. Gender", ["Female", "Male"])
+        gender = st.selectbox("1. Gender", ["Male", "Female"])
         age = st.slider("2. Age (years)", 14, 80, 25)
-        height = st.number_input("3. Height (meters)", 1.20, 2.20, 1.65, 0.01)
-        weight = st.number_input("4. Weight (kilograms)", 30.0, 200.0, 65.0, 0.1)
+        # Height input
+        height_str = st.text_input("3. Height (meters)", "1.65")
+        # Weight input
+        weight_str = st.text_input("4. Weight (kilograms)", "65.0")
+
+        # Initialize validation flags
+        height_valid = False
+        weight_valid = False
+
+        # Try converting safely to floats
+        try:
+            height = float(height_str)
+            # enforce range [1.20, 2.20]
+            if not (1.20 <= height <= 2.20):
+                st.warning("Height must be between 1.20 and 2.20 meters")
+            else:
+                height_valid = True
+        except ValueError:
+            st.warning("Please enter a valid number for height")
+
+        try:
+            weight = float(weight_str)
+            # enforce range [30.0, 200.0]
+            if not (30.0 <= weight <= 200.0):
+                st.warning("Weight must be between 30.0 and 200.0 kilograms")
+            else:
+                weight_valid = True
+        except ValueError:
+            st.warning("Please enter a valid number for weight")
 
         # Dietary and family history section
         st.markdown("**Health History & Dietary Habits (Fields 5-8)**")
@@ -65,8 +92,8 @@ def render_prediction_page(artifacts):
         user_input = {
             "gender": gender,
             "age": age,
-            "height": height,
-            "weight": weight,
+            "height": height if height_valid else None,
+            "weight": weight if weight_valid else None,
             "family_history": family_history,
             "favc": favc,
             "fcvc": fcvc,
@@ -81,9 +108,12 @@ def render_prediction_page(artifacts):
             "mtrans": mtrans,
         }
 
-        # Primary prediction execution
+        # Primary prediction execution - disabled if inputs are invalid
         if st.button(
-            "🔮 Execute Prediction Analysis", type="primary", use_container_width=True
+            "🔮 Execute Prediction Analysis",
+            type="primary",
+            use_container_width=True,
+            disabled=not (height_valid and weight_valid),
         ):
             with st.spinner("Processing machine learning analysis..."):
                 result = predict_obesity_level(artifacts, user_input)

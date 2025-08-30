@@ -1,11 +1,10 @@
-# app.py
 import streamlit as st
 from config.settings import Settings
 from styles.css import get_custom_css
 from models.loader import load_deployment_artifacts
 from components.sidebar import display_sidebar_information
-from pages.prediction import render_prediction_page
-from pages.analytics import render_analytics_page
+from components.prediction_interface import render_prediction_page
+from components.model_analytics import render_analytics_page
 
 
 def configure_app():
