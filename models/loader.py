@@ -1,4 +1,3 @@
-# models/loader.py
 import streamlit as st
 import pickle
 from config.settings import Settings
